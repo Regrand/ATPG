@@ -14,11 +14,11 @@ wire[0:0] r;
 wire[0:0] s;
 wire[0:0] t;
 
-nand(p, A, B, C)
-or(q, A, p);
-xor(r, B, C);
-not(s, r);
-and(Z, s, q);
+nand( p, A, B, C )
+or( q, A, p );
+xor( r, B, C );
+not( s, r );
+and( Z, s, q );
 
 endmodule
  
