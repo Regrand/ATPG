@@ -9,6 +9,6 @@ public class node {
     int num;
     int value;
     String gate;
-    ArrayList input;
-    ArrayList output;
+    ArrayList<node> input;
+    ArrayList<node> output;
 }
