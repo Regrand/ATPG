@@ -8,7 +8,6 @@ import java.util.*;
 
 
 public class node {
-		
 	
 	String name;
     int nodenum;
@@ -22,7 +21,7 @@ public class node {
     	this.nodenum = -1;
     	this.gate = null;
     	this.value = logic.x;
-        this.inputNodes = new ArrayList<node>();
+        this.inputNodes = new ArrayList();
 
     }
 

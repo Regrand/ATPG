@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class VerilogParser {
 	
-	public static void main(String[] args) throws IOException {
+	/*public static void main(String[] args) throws IOException {
 
 		FileInputStream fstream = new FileInputStream("VerilogTest.v");
 		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
@@ -89,6 +89,6 @@ public class VerilogParser {
 		
 		//Close the input stream
 		br.close();
-	}
+	}*/
 	
 }
