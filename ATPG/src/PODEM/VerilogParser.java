@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class VerilogParser {
 	
-	/*public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 
 		FileInputStream fstream = new FileInputStream("VerilogTest.v");
 		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
@@ -27,14 +27,14 @@ public class VerilogParser {
 		//Read File Line By Line
 		while ((strLine = br.readLine()) != null)   
 		{
-		  String[] splitLine = strLine.split("\\s");
+		  String[] splitLine = strLine.split("[ ,();]+");
 		  for(int i = 0; i<splitLine.length; i++)
 		  {
 			  System.out.println(splitLine[i]);
 		  }
 		  
 		  //Ignore comments
-		  if(splitLine[0]!=null)
+		  if(splitLine.length!=0)
 		  {
 			  if(splitLine[0].startsWith("//"))
 			  {
@@ -54,32 +54,100 @@ public class VerilogParser {
 				  else if(splitLine[0].startsWith("input"))
 				  {
 					  PI.add(splitLine[2]);
+					  node temp = new node();
+					  temp.name = splitLine[2];
+					  temp.gate = "PI";
+					  temp.value = logic.x;
+					  nodes.put(splitLine[2], temp);
 				  }
 				  
 				  else if(splitLine[0].startsWith("output"))
 				  {
 					  PO.add(splitLine[2]);
+					  node temp = new node();
+					  temp.name = splitLine[2];
+					  temp.gate = "PO";
+					  temp.value = logic.x;
+					  nodes.put(splitLine[2], temp);
 				  }
 				  
 				  else if(splitLine[0].startsWith("wire"))
 				  {
 					  node temp = new node();
-					  temp.name = splitLine[1].substring(0, 1);
+					  temp.name = splitLine[1];
 					  temp.value = logic.x;
-					  nodes.put(splitLine[1].substring(0, 1), temp);
+					  nodes.put(splitLine[1], temp);
 				  }
 				  
 				  else if(splitLine[0].startsWith("nand"))
 				  {
-					  System.out.println("S:" + splitLine[1].substring(0, 1));
-					  node temp = nodes.get(splitLine[1].substring(0, 1));
+					  node temp = nodes.get(splitLine[1]);
 					  temp.gate = "nand";
-					  for(int i=2; i<splitLine.length-1; i++)
+					  for(int i=2; i<splitLine.length; i++)
 					  {
-						  temp.inputNodes.add(nodes.get(splitLine[i].substring(0, 1)));
+						  temp.inputNodes.add(nodes.get(splitLine[i]));
 					  }
 				  }
-					  
+					
+				  else if(splitLine[0].startsWith("nor"))
+				  {
+					  node temp = nodes.get(splitLine[1]);
+					  temp.gate = "nor";
+					  for(int i=2; i<splitLine.length; i++)
+					  {
+						  temp.inputNodes.add(nodes.get(splitLine[i]));
+					  }
+				  }
+				  
+				  else if(splitLine[0].startsWith("and"))
+				  {
+					  node temp = nodes.get(splitLine[1]);
+					  temp.gate = "and";
+					  for(int i=2; i<splitLine.length; i++)
+					  {
+						  temp.inputNodes.add(nodes.get(splitLine[i]));
+					  }
+				  }
+				  
+				  else if(splitLine[0].startsWith("or"))
+				  {
+					  node temp = nodes.get(splitLine[1]);
+					  temp.gate = "or";
+					  for(int i=2; i<splitLine.length; i++)
+					  {
+						  temp.inputNodes.add(nodes.get(splitLine[i]));
+					  }
+				  }
+				  
+				  else if(splitLine[0].startsWith("xor"))
+				  {
+					  node temp = nodes.get(splitLine[1]);
+					  temp.gate = "xor";
+					  for(int i=2; i<splitLine.length; i++)
+					  {
+						  temp.inputNodes.add(nodes.get(splitLine[i]));
+					  }
+				  }
+				  
+				  else if(splitLine[0].startsWith("xnor"))
+				  {
+					  node temp = nodes.get(splitLine[1]);
+					  temp.gate = "xnor";
+					  for(int i=2; i<splitLine.length; i++)
+					  {
+						  temp.inputNodes.add(nodes.get(splitLine[i]));
+					  }
+				  }
+				  
+				  else if(splitLine[0].startsWith("not"))
+				  {
+					  node temp = nodes.get(splitLine[1]);
+					  temp.gate = "not";
+					  for(int i=2; i<splitLine.length; i++)
+					  {
+						  temp.inputNodes.add(nodes.get(splitLine[i]));
+					  }
+				  }
 				  
 			  }
 			  System.out.println("");
@@ -89,6 +157,11 @@ public class VerilogParser {
 		
 		//Close the input stream
 		br.close();
-	}*/
+		
+		for(HashMap.Entry<String, node> temp : nodes.entrySet())
+		{
+			temp.getValue().print_details();
+		}
+	}
 	
 }
