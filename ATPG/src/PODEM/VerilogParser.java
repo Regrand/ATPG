@@ -5,10 +5,42 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class VerilogParser {
+	
+	public static HashMap<String, node> nodes = new HashMap<String, node>();
+	public static ArrayList<String> PI = new ArrayList<String>();
+	public static ArrayList<String> PO = new ArrayList<String>();
+	public static HashMap<String, ArrayList<String>> sensitivityList = new HashMap<String, ArrayList<String>>();
+	
+	public static void forwardSim(node n)
+	{
+		
+		n.value = LogicFunctions.compute(n);
+		if(sensitivityList.get(n.name)!=null)
+		{
+			ArrayList<String> forwardNodes = sensitivityList.get(n.name);
+			for(String temp : forwardNodes){
+				forwardSim(nodes.get(temp));
+			}
+		}
+		
+	}
+	
+	public static void putInSensitivityList(String node, String sensitiveNodes)
+	{
+		if(sensitivityList.containsKey(node))
+		  {
+			  sensitivityList.get(node).add(sensitiveNodes);
+		  }
+		  else
+		  {
+			  ArrayList<String> sen = new ArrayList<String>();
+			  sen.add(sensitiveNodes);
+			  sensitivityList.put(node, sen);
+		  }
+	}
 	
 	public static void main(String[] args) throws IOException {
 
@@ -16,10 +48,9 @@ public class VerilogParser {
 		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 		String strLine;
 		
-		ArrayList<String> PI = new ArrayList<String>();
-		ArrayList<String> PO = new ArrayList<String>();
 		
-		HashMap<String, node> nodes = new HashMap<String, node>();
+		
+		
 		
 		String mainModule;
 		
@@ -86,7 +117,9 @@ public class VerilogParser {
 					  for(int i=2; i<splitLine.length; i++)
 					  {
 						  temp.inputNodes.add(nodes.get(splitLine[i]));
+						  putInSensitivityList(splitLine[i], splitLine[1]);		  
 					  }
+					  
 				  }
 					
 				  else if(splitLine[0].startsWith("nor"))
@@ -96,6 +129,7 @@ public class VerilogParser {
 					  for(int i=2; i<splitLine.length; i++)
 					  {
 						  temp.inputNodes.add(nodes.get(splitLine[i]));
+						  putInSensitivityList(splitLine[i], splitLine[1]);	
 					  }
 				  }
 				  
@@ -106,6 +140,7 @@ public class VerilogParser {
 					  for(int i=2; i<splitLine.length; i++)
 					  {
 						  temp.inputNodes.add(nodes.get(splitLine[i]));
+						  putInSensitivityList(splitLine[i], splitLine[1]);	
 					  }
 				  }
 				  
@@ -116,6 +151,7 @@ public class VerilogParser {
 					  for(int i=2; i<splitLine.length; i++)
 					  {
 						  temp.inputNodes.add(nodes.get(splitLine[i]));
+						  putInSensitivityList(splitLine[i], splitLine[1]);	
 					  }
 				  }
 				  
@@ -126,6 +162,7 @@ public class VerilogParser {
 					  for(int i=2; i<splitLine.length; i++)
 					  {
 						  temp.inputNodes.add(nodes.get(splitLine[i]));
+						  putInSensitivityList(splitLine[i], splitLine[1]);	
 					  }
 				  }
 				  
@@ -136,6 +173,7 @@ public class VerilogParser {
 					  for(int i=2; i<splitLine.length; i++)
 					  {
 						  temp.inputNodes.add(nodes.get(splitLine[i]));
+						  putInSensitivityList(splitLine[i], splitLine[1]);	
 					  }
 				  }
 				  
@@ -146,6 +184,7 @@ public class VerilogParser {
 					  for(int i=2; i<splitLine.length; i++)
 					  {
 						  temp.inputNodes.add(nodes.get(splitLine[i]));
+						  putInSensitivityList(splitLine[i], splitLine[1]);	
 					  }
 				  }
 				  
@@ -162,6 +201,34 @@ public class VerilogParser {
 		{
 			temp.getValue().print_details();
 		}
+		
+		for(HashMap.Entry<String, ArrayList<String>> temp : sensitivityList.entrySet())
+		{
+			System.out.print(temp.getKey() + " : ");
+			ArrayList<String> temp2 = temp.getValue();
+			for(String i : temp2) System.out.print(i + " ");
+			System.out.println("");
+		}
+		
+		node temp = nodes.get("A");
+		temp.value = logic.zero;
+		nodes.put("A", temp);
+		temp = nodes.get("B");
+		temp.value = logic.zero;
+		nodes.put("B", temp);
+		temp = nodes.get("C");
+		temp.value = logic.zero;
+		nodes.put("C", temp);
+		
+		forwardSim(nodes.get("A"));
+		forwardSim(nodes.get("B"));
+		forwardSim(nodes.get("C"));
+		
+		for(HashMap.Entry<String, node> temp1 : nodes.entrySet())
+		{
+			temp1.getValue().print_details();
+		}
+		
 	}
 	
 }
