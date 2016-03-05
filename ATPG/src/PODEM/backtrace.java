@@ -7,50 +7,178 @@ import java.util.*;
  */
 
 public class backtrace {
-    int count=0;
-    String min;
-    String max;
-    HashMap<String, Integer> node_count = new HashMap<String, Integer>();
 
-    public void find_path(String start, graph ckt){
-        int n=ckt.nodes.size()+ckt.PI.size();
+    static String min_PI;//the PI that the min_path converges to
+    static String min_PIt;
+    static int min_count;//length of the min path
+    static int min;
+
+    static String max_PI;//the PI that the max_path converges to
+    static String max_PIt;
+    static int max_count;//length of the max path
+    static int max;
+
+    static String obj;
+    static logic obj_val;
+
+    static String PI_set;
+    static logic PI_value;
+
+    static HashMap<String, Integer> node_count = new HashMap<String, Integer>();
+
+    public static void find_path(String start, graph ckt){
+        int count;
         int nPI=ckt.PI.size();
         String root;
+        String currentin;
         node rootnode;
         LinkedList<String> fifo = new LinkedList();
         ArrayList<String> visited_s= new ArrayList();
 
-        max=ckt.PI.get(0).name;
-        min=ckt.PI.get(0).name;;
+        for(int i =0;i<nPI;i++){
+            node_count.put(ckt.PI.get(i),-1);
+        }
 
-        fifo.addFirst(start);
-        visited_s.add(start);
-        node_count.put(start,0);
+        if(ckt.PI.contains(ckt.nodes.get(start))){
+            node_count.put(start,0);
+            min_count=0;
+            max_count=0;
+            min_PIt=start;
+            max_PIt=start;
+        }
 
-        while(fifo.size()>0) {
-            //count = count + 1;
+        else{
+            max_PIt=ckt.PI.get(0);
+            min_PIt=ckt.PI.get(0);
 
-            root = fifo.removeFirst();//key to the new root
-            rootnode = ckt.nodes.get(root);
-            count=node_count.get(rootnode.name)+1;
+            fifo.addFirst(start);
+            visited_s.add(start);
+            node_count.put(start,0);
 
-            for (int i = 0; i < rootnode.inputNodes.size(); i++) {
-                if (!visited_s.contains(rootnode.inputNodes.get(i).name)) {
-                    node_count.put(rootnode.inputNodes.get(i).name, count);
-                    visited_s.add(rootnode.inputNodes.get(i).name);
-                    if (!ckt.PI.contains(rootnode.inputNodes.get(i))){
-                        fifo.addLast(rootnode.inputNodes.get(i).name);
+            while(fifo.size()>0) {
+
+                root = fifo.removeFirst();//key to the new root
+                rootnode = ckt.nodes.get(root);
+                count=node_count.get(root)+1;
+
+                for (int i = 0; i < rootnode.inputNodes.size(); i++) {
+                    currentin=rootnode.inputNodes.get(i).name;
+                    if (!visited_s.contains(currentin) && rootnode.inputNodes.get(i).value==logic.x) {
+                        node_count.remove(currentin);
+                        node_count.put(currentin, count);
+                        visited_s.add(currentin);
+
+                        if (!ckt.PI.contains(currentin)) {
+                            fifo.addLast(currentin);
+                        }
                     }
                 }
             }
         }
 
-        for(int i=1;i<nPI;i++){
-            if(node_count.get(ckt.PI.get(i).name)<node_count.get(min))
-                min=ckt.PI.get(i).name;
+        min_count=Integer.MAX_VALUE;
+        max_count=-1;
 
-            if(node_count.get(ckt.PI.get(i).name)>node_count.get(max))
-                max=ckt.PI.get(i).name;
+        for(int i=0;i<nPI;i++){
+            if(node_count.get(ckt.PI.get(i))>-1){
+                if(node_count.get(ckt.PI.get(i))>max_count) {
+                    max_PIt = ckt.PI.get(i);
+                    max_count = node_count.get(ckt.PI.get(i));
+                }
+
+                if(node_count.get(ckt.PI.get(i))<min_count){
+                    min_PIt=ckt.PI.get(i);
+                    min_count=node_count.get(ckt.PI.get(i));
+                }
+            }
+        }
+
+    }
+
+    public static String find_min(String obj, graph ckt) {
+
+        int nIN = ckt.nodes.get(obj).inputNodes.size();
+        String current;
+        String min_IN=new String();
+        min = Integer.MAX_VALUE;
+
+        for (int i = 0; i < nIN; i++) {
+            if(ckt.nodes.get(obj).inputNodes.get(i).value==logic.x) {
+
+                current = ckt.nodes.get(obj).inputNodes.get(i).name;
+                find_path(current, ckt);
+
+                if (min_count < min) {
+                    min_IN = current;
+                    min = min_count;
+                    min_PI = min_PIt;
+                }
+            }
+        }
+        return min_IN;
+    }
+
+    public static String find_max(String obj, graph ckt) {
+
+        int nIN = ckt.nodes.get(obj).inputNodes.size();
+        String current;
+        String max_IN=new String();
+        max = -1;
+
+        for (int i = 0; i < nIN; i++) {
+            if(ckt.nodes.get(obj).inputNodes.get(i).value==logic.x) {
+
+                current = ckt.nodes.get(obj).inputNodes.get(i).name;
+                find_path(current, ckt);
+
+                if (max_count > max) {
+                    max_IN = current;
+                    max = max_count;
+                    max_PI = max_PIt;
+                }
+            }
+        }
+        return max_IN;
+    }
+
+    public static void objective(String g, logic val, graph ckt){
+
+        int nIN=ckt.nodes.get(g).inputNodes.size();
+        int count=0;
+
+        for(int i =0;i<nIN;i++){
+            if(ckt.nodes.get(g).inputNodes.get(i).value==logic.x){
+                count=count+1;
+            }
+        }
+        //System.out.println("count is "+count);
+        if(count==1)
+            obj=find_min(g,ckt);
+        else
+            obj=find_max(g,ckt);
+
+        if(ckt.nodes.get(obj).gate=="nand" || ckt.nodes.get(obj).gate=="nor"|| ckt.nodes.get(obj).gate=="not")
+            obj_val=LogicFunctions.not(val);
+        else
+            obj_val=val;
+    }
+
+    public static void backtrace_func(String fault, logic sa, graph ckt){
+
+        if(ckt.nodes.get(fault).name=="PI") {
+            PI_set=fault;
+            PI_value=LogicFunctions.not(sa);
+        }
+
+        else{
+            obj=fault;
+            obj_val=LogicFunctions.not(sa);
+
+            while(!ckt.PI.contains(obj)) {
+                objective(obj,obj_val,ckt);
+            }
+            PI_set=obj;
+            PI_value=obj_val;
         }
     }
 }

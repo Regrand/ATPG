@@ -21,9 +21,5 @@ public class ForwardSim {
 					forwardSim(VerilogParser.nodes.get(temp));
 				}
 			}
-		
-		
 	}
-	
-		
 }

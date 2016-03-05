@@ -205,6 +205,7 @@ public class LogicFunctions {
 	
 	public static logic xor(logic in1, logic in2)
 	{
+
 		return or(and(in1, not(in2)), and(not(in1), in2));
 	}
 	
@@ -215,11 +216,13 @@ public class LogicFunctions {
 	
 	public static logic nand(logic in1, logic in2)
 	{
+
 		return not(and(in1, in2));
 	}
 	
 	public static logic nor(logic in1, logic in2)
 	{
+
 		return not(or(in1, in2));
 	}
 	

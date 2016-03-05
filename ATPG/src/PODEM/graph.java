@@ -6,23 +6,13 @@ import java.util.*;
  */
 public class graph {
     HashMap<String, node> nodes = new HashMap<String, node>();
-    ArrayList <node> PI=new ArrayList<>(); //nodes to the graph other than the PI
+    ArrayList <String> PI=new ArrayList<>(); //nodes to the graph other than the PI
 
     public void addnode(String newstring,node newnode){
         nodes.put(newstring,newnode);
     }
 
-    public void addPI(node newnode){
+    public void addPI(String newnode){
         PI.add(newnode);
     }
-    /*public static void main(String[] args){
-    	
-    	graph main = new graph();
-    	node nw = new node();
-    	
-    	//insert elements
-    	main.nodes.put("a", nw);
-    	//get elements
-    	nw = main.nodes.get("a");
-    }*/
 }
