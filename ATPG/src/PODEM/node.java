@@ -13,6 +13,7 @@ public class node {
     int nodenum;
     logic value;
     String gate;
+    String fault;
     ArrayList<node> inputNodes;
 
     public node(){
@@ -21,6 +22,7 @@ public class node {
     	this.nodenum = -1;
     	this.gate = null;
     	this.value = logic.x;
+    	this.fault = "none";
         this.inputNodes = new ArrayList<node>();
 
     }

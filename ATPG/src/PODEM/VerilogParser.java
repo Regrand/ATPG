@@ -14,20 +14,6 @@ public class VerilogParser {
 	public static ArrayList<String> PO = new ArrayList<String>();
 	public static HashMap<String, ArrayList<String>> sensitivityList = new HashMap<String, ArrayList<String>>();
 	
-	public static void forwardSim(node n)
-	{
-		
-		n.value = LogicFunctions.compute(n);
-		if(sensitivityList.get(n.name)!=null)
-		{
-			ArrayList<String> forwardNodes = sensitivityList.get(n.name);
-			for(String temp : forwardNodes){
-				forwardSim(nodes.get(temp));
-			}
-		}
-		
-	}
-	
 	public static void putInSensitivityList(String node, String sensitiveNodes)
 	{
 		if(sensitivityList.containsKey(node))
@@ -42,6 +28,8 @@ public class VerilogParser {
 		  }
 	}
 	
+	
+
 	public static void main(String[] args) throws IOException {
 
 		FileInputStream fstream = new FileInputStream("VerilogTest.v");
@@ -220,9 +208,13 @@ public class VerilogParser {
 		temp.value = logic.zero;
 		nodes.put("C", temp);
 		
-		forwardSim(nodes.get("A"));
-		forwardSim(nodes.get("B"));
-		forwardSim(nodes.get("C"));
+		temp = nodes.get("q");
+		temp.fault = "SA0";
+		nodes.put("q", temp);
+		
+		ForwardSim.forwardSim(nodes.get("A"));
+		ForwardSim.forwardSim(nodes.get("B"));
+		ForwardSim.forwardSim(nodes.get("C"));
 		
 		for(HashMap.Entry<String, node> temp1 : nodes.entrySet())
 		{
