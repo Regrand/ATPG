@@ -35,6 +35,7 @@ public class node {
     	System.out.println("Gate: " + this.gate);
     	System.out.println("Nodenum: " + this.nodenum);
     	System.out.println("Value: " + this.value);
+    	System.out.println("Fault: " + this.fault);
     	
     	System.out.println("List of input node names:");
     	for(int i=0; i<this.inputNodes.size(); i++){

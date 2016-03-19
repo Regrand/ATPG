@@ -53,9 +53,9 @@ public class Podem {
 		circuit.addnode("e",n5);
 		circuit.addnode("f",n6);
 
-		circuit.addPI(n1);
-		circuit.addPI(n2);
-		circuit.addPI(n3);
+		//circuit.addPI(n1);
+		//circuit.addPI(n2);
+		//circuit.addPI(n3);
 
 		backtrace b=new backtrace();
 		b.find_path("f",circuit);
