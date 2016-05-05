@@ -240,16 +240,16 @@ public class LogicFunctions {
 		case("nand"):
 			logic val1 = logic.one;
 			for(node input : compNode.inputNodes){
-				val1 = nand(val1, input.value);
+				val1 = and(val1, input.value);
 			}
-			return val1;
+			return not(val1);
 			
 		case("nor"):
 			logic val2 = logic.zero;
 			for(node input : compNode.inputNodes){
-				val2 = nor(val2, input.value);
+				val2 = or(val2, input.value);
 			}
-			return val2;
+			return not(val2);
 			
 		case("and"):
 			logic val3 = logic.one;

@@ -6,6 +6,14 @@ import java.util.*;
 
 public class MainATPG {
 
+	public static boolean isSensitized(node faultNode)
+	{
+		logic t = LogicFunctions.compute(faultNode);
+		if((faultNode.fault=="SA0" && t==logic.one)||(faultNode.fault=="SA1" && t==logic.zero))
+			return true;
+		else return false;
+	}
+	
 	public static void main(String[] args)  throws IOException {
 		graph ckt=new graph();
 		String fault=new String();				//fault node
@@ -41,13 +49,15 @@ public class MainATPG {
 			backtrace.backtrace_func(fault,sa,ckt);
 			backtrack.flipPI.push(false);
 			backtrack.assignPI.push((backtrace.PI_set));
+			
 			node te = ckt.nodes.get(backtrace.PI_set);
 			te.value = backtrace.PI_value;
 			ckt.nodes.put(backtrace.PI_set, te);
 			
 			ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
 
-			if(ckt.nodes.get(fault).value == sa) {
+			
+			if(isSensitized(ckt.nodes.get(fault))) {
 				for (int i = 0; i < ckt.PO.size(); i++) {
 					if (ckt.nodes.get(ckt.PO.get(i)).value == logic.d || ckt.nodes.get(ckt.PO.get(i)).value == logic.d_bar) {
 						success = true;
