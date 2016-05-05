@@ -4,8 +4,7 @@ import java.util.ArrayList;
 
 public class ForwardSim {
 
-	public static void forwardSim(node n)
-	{
+	public static void forwardSim(node n) {
 		logic t = null;
 		if(n.fault=="SA0") t = logic.d;
 		else if(n.fault=="SA1") t = logic.d_bar;

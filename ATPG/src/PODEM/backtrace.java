@@ -165,7 +165,7 @@ public class backtrace {
 
     public static void backtrace_func(String fault, logic sa, graph ckt){
 
-        if(ckt.nodes.get(fault).name=="PI") {
+        if(ckt.nodes.get(fault).gate=="PI") {
             PI_set=fault;
             PI_value=LogicFunctions.not(sa);
         }

@@ -1,9 +1,6 @@
 package PODEM;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -28,9 +25,9 @@ public class VerilogParser {
 		  }
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void parser_func(String filename) throws IOException {
 
-		FileInputStream fstream = new FileInputStream("VerilogTest.v");
+		FileInputStream fstream = new FileInputStream(filename);
 		BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 		String strLine;
 
