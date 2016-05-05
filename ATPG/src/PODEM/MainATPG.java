@@ -14,6 +14,24 @@ public class MainATPG {
 		else return false;
 	}
 	
+	public static String allPIAssigned(graph ckt)
+	{
+		String retval = new String();
+		
+		//All PIs not yet assigned
+		if(backtrack.flipPI.size()<ckt.PI.size())
+		{
+			for(String in: ckt.PI)
+			{
+				if(backtrack.assignPI.contains(in)) continue;
+				else return in;
+			}
+		}
+		
+		return null;
+	}
+			
+	
 	public static void main(String[] args)  throws IOException {
 		graph ckt=new graph();
 		String fault=new String();				//fault node
@@ -46,16 +64,62 @@ public class MainATPG {
 
 			//Include X path check for the current D-frontier
 
-			backtrace.backtrace_func(fault,sa,ckt);
-			backtrack.flipPI.push(false);
-			backtrack.assignPI.push((backtrace.PI_set));
 			
-			node te = ckt.nodes.get(backtrace.PI_set);
-			te.value = backtrace.PI_value;
-			ckt.nodes.put(backtrace.PI_set, te);
+			if(!isSensitized(ckt.nodes.get(fault))) {
 			
-			ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
+				backtrace.backtrace_func(fault,sa,ckt);
+				backtrack.flipPI.push(false);
+				backtrack.assignPI.push((backtrace.PI_set));
+				
+				node te = ckt.nodes.get(backtrace.PI_set);
+				te.value = backtrace.PI_value;
+				ckt.nodes.put(backtrace.PI_set, te);
+				
+				ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
 
+			}
+			
+			//Assign unassigned PIs
+			else if(allPIAssigned(ckt)!=null)
+			{	
+				String t = allPIAssigned(ckt);
+				node te = ckt.nodes.get(t);
+				te.value = logic.zero;
+				ckt.nodes.put(t, te);
+				
+				backtrack.flipPI.push(false);
+				backtrack.assignPI.push(t);
+				ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
+				
+			}
+			else
+			{
+				boolean term = true;
+				while(!backtrack.assignPI.isEmpty())
+				{
+					String t = backtrack.assignPI.pop();
+					boolean flipped = backtrack.flipPI.pop(); 
+					if(flipped) continue;
+					else
+					{
+						node te = ckt.nodes.get(t);
+						te.value = LogicFunctions.not(te.value);
+						ckt.nodes.put(t, te);
+						
+						backtrack.flipPI.push(true);
+						backtrack.assignPI.push(t);
+						ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
+						term = false;
+						break;
+					}
+				}
+				//terminate
+				if(term) 
+					{
+					System.out.println("No vector");
+					break;
+					}
+			}
 			
 			if(isSensitized(ckt.nodes.get(fault))) {
 				for (int i = 0; i < ckt.PO.size(); i++) {

@@ -16,7 +16,7 @@ wire[0:0] s;
 wire[0:0] t;
 wire[0:0] l;
 
-nand(p, A, B, C );
+xor(p, A, B, C );
 or( q,A, p );
 nor( r, B, C );
 not(s,r );
