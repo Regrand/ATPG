@@ -18,7 +18,7 @@ wire[0:0] l;
 
 nand(p, A, B, C );
 or( q,A, p );
-xor( r, B, C );
+nor( r, B, C );
 not(s,r );
 nand(t,r,A);
 nor(l,B,r);

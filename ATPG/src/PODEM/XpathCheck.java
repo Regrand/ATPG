@@ -20,12 +20,13 @@ public class XpathCheck {
 				node fan = VerilogParser.nodes.get(temp);
 				if(fan.value==logic.d | fan.value==logic.d_bar | fan.value==logic.x)
 				{
-					checkPath = checkPath | xPathCheck(fan);
+					checkPath = checkPath & xPathCheck(fan);
+					if(checkPath==true) return checkPath;
 				}
 				
 			}
 			
-			return checkPath;
+			return false;
 		}
 		
 		else

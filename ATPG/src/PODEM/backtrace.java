@@ -151,16 +151,19 @@ public class backtrace {
                 count=count+1;
             }
         }
+        String temp = new String();
         //System.out.println("count is "+count);
         if(count==1)
-            obj=find_min(g,ckt);
+            temp=find_min(g,ckt);
         else
-            obj=find_max(g,ckt);
+            temp=find_max(g,ckt);
 
         if(ckt.nodes.get(obj).gate=="nand" || ckt.nodes.get(obj).gate=="nor"|| ckt.nodes.get(obj).gate=="not")
             obj_val=LogicFunctions.not(val);
         else
             obj_val=val;
+        
+        obj = temp;
     }
 
     public static void backtrace_func(String fault, logic sa, graph ckt){
