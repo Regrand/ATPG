@@ -175,11 +175,13 @@ public class VerilogParser {
 		//Close the input stream
 		br.close();
 
+		/*
 		for(HashMap.Entry<String, node> temp : nodes.entrySet())
 		{
 			temp.getValue().print_details();
 		}
-
+		 */
+		
 		for(HashMap.Entry<String, ArrayList<String>> temp : sensitivityList.entrySet())
 		{
 			System.out.print(temp.getKey() + " : ");
@@ -188,6 +190,7 @@ public class VerilogParser {
 			System.out.println("");
 		}
 
+		/*
 		node temp = nodes.get("A");
 		temp.value = logic.zero;
 		nodes.put("A", temp);
@@ -207,7 +210,7 @@ public class VerilogParser {
 		{
 			temp1.getValue().print_details();
 		}
-		
+		*/
 		boolean present = XpathCheck.xPathCheck(nodes.get("r"));
 		System.out.println(present);
 		

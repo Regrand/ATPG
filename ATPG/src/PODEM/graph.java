@@ -6,10 +6,10 @@ import java.util.*;
  */
 public class graph {
 
-    public static HashMap<String, node> nodes = new HashMap<String, node>();
-    public static ArrayList<String> PI = new ArrayList<String>();
-    public static ArrayList<String> PO = new ArrayList<String>();
-    public static HashMap<String, ArrayList<String>> sensitivityList = new HashMap<String, ArrayList<String>>();
+    public HashMap<String, node> nodes = new HashMap<String, node>();
+    public ArrayList<String> PI = new ArrayList<String>();
+    public ArrayList<String> PO = new ArrayList<String>();
+    public HashMap<String, ArrayList<String>> sensitivityList = new HashMap<String, ArrayList<String>>();
 
 
     public void addnode(String newstring,node newnode){

@@ -3,6 +3,7 @@ package PODEM;
 import java.io.IOException;
 import java.util.*;
 
+
 public class MainATPG {
 
 	public static void main(String[] args)  throws IOException {
@@ -11,6 +12,26 @@ public class MainATPG {
 		logic sa=logic.zero;		//fault stuck at 'sa'
 		Boolean success=false;
 
+		VerilogParser.parser_func("VerilogTest.v");
+		ckt.nodes = VerilogParser.nodes;
+		ckt.PI = VerilogParser.PI;
+		ckt.PO = VerilogParser.PO;
+		ckt.sensitivityList = VerilogParser.sensitivityList;
+		
+		System.out.println("Printing Node Details");
+		
+		
+		node temp = ckt.nodes.get("r");
+		temp.fault = "SA0";
+		ckt.nodes.put("r", temp);
+		fault = "r";
+		
+		/*
+		for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
+		{
+			temp1.getValue().print_details();
+		}
+		*/
 		//use the verilog Parser
 
 		while(!success){
@@ -20,6 +41,10 @@ public class MainATPG {
 			backtrace.backtrace_func(fault,sa,ckt);
 			backtrack.flipPI.push(false);
 			backtrack.assignPI.push((backtrace.PI_set));
+			node te = ckt.nodes.get(backtrace.PI_set);
+			te.value = backtrace.PI_value;
+			ckt.nodes.put(backtrace.PI_set, te);
+			
 			ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
 
 			if(ckt.nodes.get(fault).value == sa) {
@@ -41,6 +66,10 @@ public class MainATPG {
 						break;
 					}
 				}
+			}
+			for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
+			{
+				temp1.getValue().print_details();
 			}
 		}
 
