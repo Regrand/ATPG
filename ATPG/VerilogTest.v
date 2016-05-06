@@ -5,8 +5,7 @@ module structural_verilog
 input wire[0:0] A,
 input wire[0:0] B,
 input wire[0:0] C,
-output wire[0:0] Z,
-output wire[0:0] Y
+output wire[0:0] Z
 );
 
 wire[0:0] p;
