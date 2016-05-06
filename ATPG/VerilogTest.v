@@ -13,11 +13,15 @@ wire[0:0] r;
 wire[0:0] s;
 wire[0:0] t;
 wire[0:0] l;
+wire[0:0] u;
+wire[0:0] v;
 
 buf(t, B);
 buf(l, B);
-xor(p, A, t, C );
-nor( r, l, C );
+buf(u, C);
+buf(v, C);
+xor(p, A, t, u );
+nor( r, l, v );
 not(s,r );
 and( Z,s, p );
 

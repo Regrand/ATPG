@@ -169,6 +169,24 @@ public class backtrace {
     }
 
     public static void backtrace_func(String fault, logic sa, graph ckt){
+    	
+    	min_PI = null;//the PI that the min_path converges to
+    	min_PIt = null;
+    	min_count= -1;//length of the min path
+    	min = -1;
+
+    	max_PI = null;//the PI that the max_path converges to
+    	max_PIt = null;
+    	max_count = -1;//length of the max path
+    	max = -1;
+
+    	obj = null;
+    	obj_val = null;
+
+    	PI_set = null;
+    	PI_value = null;
+
+    	node_count.clear();
 
         if(ckt.nodes.get(fault).gate=="PI") {
             PI_set=fault;
