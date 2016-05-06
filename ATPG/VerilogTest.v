@@ -10,20 +10,17 @@ output wire[0:0] Y
 );
 
 wire[0:0] p;
-wire[0:0] q;
 wire[0:0] r;
 wire[0:0] s;
 wire[0:0] t;
 wire[0:0] l;
 
-xor(p, A, B, C );
-or( q,A, p );
-nor( r, B, C );
+buf(t, B);
+buf(l, B);
+xor(p, A, t, C );
+nor( r, l, C );
 not(s,r );
-nand(t,r,A);
-nor(l,B,r);
-and( Z,s, q );
-or(Y, l, t);
+and( Z,s, p );
 
 endmodule
  

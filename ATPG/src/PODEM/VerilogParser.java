@@ -165,6 +165,17 @@ public class VerilogParser {
 						  putInSensitivityList(splitLine[i], splitLine[1]);
 					  }
 				  }
+				  
+				  else if(splitLine[0].startsWith("buf"))
+				  {
+					  node temp = nodes.get(splitLine[1]);
+					  temp.gate = "noGate";
+					  for(int i=2; i<splitLine.length; i++)
+					  {
+						  temp.inputNodes.add(nodes.get(splitLine[i]));
+						  putInSensitivityList(splitLine[i], splitLine[1]);
+					  }
+				  }
 
 			  }
 			  System.out.println("");
