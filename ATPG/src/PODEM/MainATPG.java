@@ -47,6 +47,7 @@ public class MainATPG {
 	public static void main(String[] args)  throws IOException {
 
 
+
 		File file = new File("Test_Vectors.txt");
 		file.createNewFile();
 		FileWriter writer = new FileWriter(file);
