@@ -188,6 +188,8 @@ public class backtrace {
 
     	node_count.clear();
 
+        System.out.println("entered backtrace");
+        System.out.println(fault);
         if(ckt.nodes.get(fault).gate=="PI") {
             PI_set=fault;
             PI_value=LogicFunctions.not(sa);
@@ -196,8 +198,10 @@ public class backtrace {
         else{
             obj=fault;
             obj_val=LogicFunctions.not(sa);
-
-            while(!ckt.PI.contains(obj)) {
+            System.out.println(obj);
+            System.out.println(obj_val);
+            System.out.println(ckt.nodes.get(obj).gate);
+            while(ckt.nodes.get(obj).inputNodes.size()>0) {
                 objective(obj,obj_val,ckt);
             }
             PI_set=obj;

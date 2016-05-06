@@ -2,6 +2,7 @@ package PODEM;
 
 import java.io.IOException;
 import java.util.*;
+import java.io.*;
 
 
 public class MainATPG {
@@ -44,10 +45,18 @@ public class MainATPG {
 			
 	
 	public static void main(String[] args)  throws IOException {
-		
+
+
+		File file = new File("Test_Vectors.txt");
+		file.createNewFile();
+		FileWriter writer = new FileWriter(file);
+		//writer.write("This\n is\n an\n example\n");
+
+
 		graph ckt=new graph();
 
 		VerilogParser.parser_func("c17_benchmark.v");
+		//VerilogParser.parser_func("verilog_book_example.v");
 		ckt.nodes = VerilogParser.nodes;
 		ckt.PI = VerilogParser.PI;
 		ckt.PO = VerilogParser.PO;
@@ -89,12 +98,25 @@ public class MainATPG {
 						System.out.println("Succeeded");
 						System.out.println(fault + ":1");
 						countSucc++;
+
+						writer.write(fault+" " + ckt.nodes.get(fault).fault+" fault\n");
+						for(int j=0;j<ckt.PI.size();j++){
+							writer.write(ckt.nodes.get(ckt.PI.get(j)).name+" " + ckt.nodes.get(ckt.PI.get(j)).value+"\n");
+						}
+						writer.write("\n");
+
 					}
 					else if(ckt.nodes.get(fault).fault=="SA1")
 					{
 						System.out.println("Succeeded");
 						System.out.println(fault + ":0");
 						countSucc++;
+
+						writer.write(fault+" " + ckt.nodes.get(fault).fault+" fault\n");
+						for(int j=0;j<ckt.PI.size();j++){
+							writer.write(ckt.nodes.get(ckt.PI.get(j)).name+" " + ckt.nodes.get(ckt.PI.get(j)).value+"\n");
+						}
+						writer.write("\n");
 					}
 				}
 				else {
@@ -131,6 +153,14 @@ public class MainATPG {
 							success = true;
 							System.out.println("Success");
 							countSucc++;
+
+							writer.write(fault+" " + ckt.nodes.get(fault).fault+" fault\n");
+							for(int j=0;j<ckt.PI.size();j++){
+								writer.write(ckt.nodes.get(ckt.PI.get(j)).name+" " + ckt.nodes.get(ckt.PI.get(j)).value+"\n");
+							}
+							writer.write("\n");
+
+
 							for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
 							{
 								System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
@@ -163,6 +193,13 @@ public class MainATPG {
 									success = true;
 									System.out.println("Success");
 									countSucc++;
+
+									writer.write(fault+" " + ckt.nodes.get(fault).fault+" fault\n");
+									for(int j=0;j<ckt.PI.size();j++){
+										writer.write(ckt.nodes.get(ckt.PI.get(j)).name+" " + ckt.nodes.get(ckt.PI.get(j)).value+"\n");
+									}
+									writer.write("\n");
+
 									for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
 									{
 										System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
@@ -217,6 +254,14 @@ public class MainATPG {
 								success = true;
 								System.out.println("Success");
 								countSucc++;
+
+								writer.write(fault+" " + ckt.nodes.get(fault).fault+" fault\n");
+								for(int j=0;j<ckt.PI.size();j++){
+									writer.write(ckt.nodes.get(ckt.PI.get(j)).name+" " + ckt.nodes.get(ckt.PI.get(j)).value+"\n");
+								}
+								writer.write("\n");
+
+
 								for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
 								{
 									System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
@@ -259,8 +304,9 @@ public class MainATPG {
 		
 		System.out.println("Total Faults : " + totalFaults);
 		System.out.println("Vectors generated : " + countSucc);
-		System.out.println("Unable to find vectors : " + countFail);
-		
+		System.out.println("Detected faults : " + (totalFaults - countFail));
+		writer.flush();
+		writer.close();
 	}
 	
 }

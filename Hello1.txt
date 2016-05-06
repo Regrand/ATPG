@@ -1,0 +1,238 @@
+N1 SA0 fault
+N1 d
+N2 x
+N3 x
+N6 x
+N7 x
+
+N1 SA1 fault
+N1 d_bar
+N2 x
+N3 x
+N6 x
+N7 x
+
+N2 SA0 fault
+N1 x
+N2 d
+N3 x
+N6 x
+N7 x
+
+N2 SA1 fault
+N1 x
+N2 d_bar
+N3 x
+N6 x
+N7 x
+
+N3 SA0 fault
+N1 x
+N2 x
+N3 d
+N6 x
+N7 x
+
+N3 SA1 fault
+N1 x
+N2 x
+N3 d_bar
+N6 x
+N7 x
+
+N4 SA0 fault
+N1 one
+N2 zero
+N3 one
+N6 x
+N7 x
+
+N4 SA1 fault
+N1 one
+N2 zero
+N3 zero
+N6 x
+N7 x
+
+N5 SA0 fault
+N1 zero
+N2 one
+N3 one
+N6 one
+N7 x
+
+N5 SA1 fault
+N1 zero
+N2 one
+N3 zero
+N6 one
+N7 x
+
+N6 SA0 fault
+N1 x
+N2 x
+N3 x
+N6 d
+N7 x
+
+N6 SA1 fault
+N1 x
+N2 x
+N3 x
+N6 d_bar
+N7 x
+
+N7 SA0 fault
+N1 x
+N2 x
+N3 x
+N6 x
+N7 d
+
+N7 SA1 fault
+N1 x
+N2 x
+N3 x
+N6 x
+N7 d_bar
+
+N10 SA0 fault
+N1 zero
+N2 zero
+N3 zero
+N6 x
+N7 x
+
+N10 SA1 fault
+N1 one
+N2 zero
+N3 one
+N6 x
+N7 x
+
+N23 SA0 fault
+N1 x
+N2 one
+N3 zero
+N6 x
+N7 x
+
+N23 SA1 fault
+N1 x
+N2 x
+N3 one
+N6 one
+N7 x
+
+N12 SA0 fault
+N1 zero
+N2 one
+N3 zero
+N6 x
+N7 x
+
+N12 SA1 fault
+N1 zero
+N2 one
+N3 one
+N6 one
+N7 x
+
+N22 SA0 fault
+N1 x
+N2 one
+N3 zero
+N6 x
+N7 x
+
+N22 SA1 fault
+N1 zero
+N2 x
+N3 one
+N6 one
+N7 x
+
+N11 SA0 fault
+N1 zero
+N2 one
+N3 zero
+N6 x
+N7 x
+
+N11 SA1 fault
+N1 zero
+N2 one
+N3 one
+N6 one
+N7 x
+
+N13 SA0 fault
+N1 zero
+N2 zero
+N3 zero
+N6 zero
+N7 one
+
+N13 SA1 fault
+N1 zero
+N2 zero
+N3 one
+N6 one
+N7 one
+
+N16 SA0 fault
+N1 x
+N2 x
+N3 one
+N6 one
+N7 x
+
+N16 SA1 fault
+N1 x
+N2 one
+N3 zero
+N6 x
+N7 x
+
+N18 SA0 fault
+N1 x
+N2 x
+N3 one
+N6 one
+N7 x
+
+N18 SA1 fault
+N1 zero
+N2 one
+N3 zero
+N6 zero
+N7 zero
+
+N17 SA0 fault
+N1 zero
+N2 x
+N3 one
+N6 one
+N7 x
+
+N17 SA1 fault
+N1 x
+N2 one
+N3 zero
+N6 x
+N7 x
+
+N19 SA0 fault
+N1 x
+N2 x
+N3 one
+N6 one
+N7 x
+
+N19 SA1 fault
+N1 zero
+N2 zero
+N3 zero
+N6 x
+N7 one
+
