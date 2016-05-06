@@ -14,10 +14,21 @@ public class MainATPG {
 		else return false;
 	}
 	
+	public static boolean succeeded(graph ckt, String fault)
+	{
+		if(isSensitized(ckt.nodes.get(fault))) {
+			for (String tp: ckt.PO) {
+				if (ckt.nodes.get(tp).value == logic.d || ckt.nodes.get(tp).value == logic.d_bar) {
+					return true;
+				}
+			}
+		}	
+		return false;	
+	}
+	
 	public static String allPIAssigned(graph ckt)
 	{
-		String retval = new String();
-		
+
 		//All PIs not yet assigned
 		if(backtrack.flipPI.size()<ckt.PI.size())
 		{
@@ -33,149 +44,186 @@ public class MainATPG {
 			
 	
 	public static void main(String[] args)  throws IOException {
+		
 		graph ckt=new graph();
-		String fault=new String();				//fault node
-		logic sa=logic.one;		//fault stuck at 'sa'
 		Boolean success=false;
 
-		VerilogParser.parser_func("verilog_book_example.v");
+		VerilogParser.parser_func("VerilogTest.v");
 		ckt.nodes = VerilogParser.nodes;
 		ckt.PI = VerilogParser.PI;
 		ckt.PO = VerilogParser.PO;
 		ckt.sensitivityList = VerilogParser.sensitivityList;
 		
+		int totalFaults = 0;
+		int countSucc = 0;
+		int countFail = 0;
+		
 		System.out.println("Printing Node Details");
+		System.out.println("--------------");
 		
-		
-		node temp = ckt.nodes.get("s");
-		temp.fault = "SA1";
-		ckt.nodes.put("s", temp);
-		fault = "s";
-		
-		/*
-		for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
+		for(HashMap.Entry<String, node> f : ckt.nodes.entrySet())
 		{
-			temp1.getValue().print_details();
-		}
-		*/
-		//use the verilog Parser
-
-		while(!success){
-
-			//Include X path check for the current D-frontier
-
 			
-			if(!isSensitized(ckt.nodes.get(fault))) {
+			String fault = f.getKey();
+			node temp = ckt.nodes.get(fault);
+			logic sa=logic.zero;		//fault stuck at 'sa'
+			temp.fault = "SA0";
+			ckt.nodes.put(fault, temp);
+			System.out.println("Testing for fault : " + fault + " " + temp.fault);
 			
-				try {
-					backtrace.backtrace_func(fault,sa,ckt);
-					backtrack.flipPI.push(false);
-					backtrack.assignPI.push((backtrace.PI_set));
-					
-					node te = ckt.nodes.get(backtrace.PI_set);
-					te.value = backtrace.PI_value;
-					ckt.nodes.put(backtrace.PI_set, te);
-					
-					ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
-					for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
-					{
-						System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
-					}
-					System.out.println("-------------");
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			totalFaults++;
 			
-			
-			
-			
-			if(isSensitized(ckt.nodes.get(fault))) {
-				for (String tp: ckt.PO) {
-					if (ckt.nodes.get(tp).value == logic.d || ckt.nodes.get(tp).value == logic.d_bar) {
-						success = true;
-						break;
-					}
-				}
-			}
-
-			//Xpath succeeds and fault sensitized
-			if(XpathCheck.xPathCheck(ckt.nodes.get(fault)) && isSensitized(ckt.nodes.get(fault)) && !success)
-			{				
-				//Assign unassigned PIs
-				if(allPIAssigned(ckt)!=null)
-				{	
-					String t = allPIAssigned(ckt);
-					node te = ckt.nodes.get(t);
-					te.value = logic.zero;
-					ckt.nodes.put(t, te);
-					
-					backtrack.flipPI.push(false);
-					backtrack.assignPI.push(t);
-					ForwardSim.forwardSim(ckt.nodes.get(t));
-					for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
-					{
-						System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
-					}
-					System.out.println("-------------");
-										
-				}
-				
-				for (String tp: ckt.PO) {
-					if (ckt.nodes.get(tp).value == logic.d || ckt.nodes.get(tp).value == logic.d_bar) {
-						success = true;
-						break;
-					}
-				}
-			}
-			
-			//Xpath fails. Backtrack
-			else if(!XpathCheck.xPathCheck(ckt.nodes.get(fault)) && !success)
+			for(int i=0; i<2; i++)
 			{
-				boolean term = true;
-				while(!backtrack.assignPI.isEmpty())
-				{
-					String t = backtrack.assignPI.pop();
-					boolean flipped = backtrack.flipPI.pop(); 
-					if(flipped) continue;
-					else
+				while(!success){
+		
+					boolean btfail = false;
+					
+					if(!isSensitized(ckt.nodes.get(fault))) {
+					
+						try {
+								backtrace.backtrace_func(fault,sa,ckt);
+								backtrack.flipPI.push(false);
+								backtrack.assignPI.push((backtrace.PI_set));
+								
+								node te = ckt.nodes.get(backtrace.PI_set);
+								te.value = backtrace.PI_value;
+								ckt.nodes.put(backtrace.PI_set, te);
+								
+								ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
+								/*for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
+								{
+									System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
+								}
+								System.out.println("-------------");
+								*/
+							} 
+							catch (Exception e) {
+								btfail = true;
+							}
+						}
+					
+					if(succeeded(ckt, fault))
 					{
-						node te = ckt.nodes.get(t);
-						te.value = LogicFunctions.not(te.value);
-						ckt.nodes.put(t, te);
-						
-						backtrack.flipPI.push(true);
-						backtrack.assignPI.push(t);
-						ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
+						success = true;
+						System.out.println("Success");
+						countSucc++;
 						for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
 						{
 							System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
 						}
-						System.out.println("-------------");
-						term = false;
-						break;
 					}
-				}
-				//backtrack.backtrack_func(ckt);
-				//ForwardSim.forwardSim(ckt.nodes.get(backtrack.assignPI.peek()));
-				//terminate
-				if(term) 
+					
+		
+					//Xpath succeeds and fault sensitized
+					if(XpathCheck.xPathCheck(ckt.nodes.get(fault)) && isSensitized(ckt.nodes.get(fault)) && !success)
+					{				
+						//Assign unassigned PIs
+						if(allPIAssigned(ckt)!=null)
+						{	
+							String t = allPIAssigned(ckt);
+							node te = ckt.nodes.get(t);
+							te.value = logic.zero;
+							ckt.nodes.put(t, te);
+							
+							backtrack.flipPI.push(false);
+							backtrack.assignPI.push(t);
+							ForwardSim.forwardSim(ckt.nodes.get(t));
+							/*for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
+							{
+								System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
+							}
+							System.out.println("-------------");
+							*/					
+							if(succeeded(ckt, fault))
+							{
+								success = true;
+								System.out.println("Success");
+								countSucc++;
+								for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
+								{
+									System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
+								}
+								System.out.println("-------------");
+							}
+						
+						}
+					}
+					
+					//Backtrack if Xpath fails, or if xpath succeeds and backtrace fails.
+					else if((!XpathCheck.xPathCheck(ckt.nodes.get(fault)) && !success)||(XpathCheck.xPathCheck(ckt.nodes.get(fault)) && btfail && !success))
 					{
-					System.out.println("No vector");
-					break;
+						boolean term = true;
+						while(!backtrack.assignPI.isEmpty())
+						{
+							String t = backtrack.assignPI.pop();
+							boolean flipped = backtrack.flipPI.pop(); 
+							if(flipped)
+							{
+								node te = ckt.nodes.get(t);
+								te.value = logic.x;
+								ckt.nodes.put(t, te);
+							}
+							else
+							{
+								node te = ckt.nodes.get(t);
+								te.value = LogicFunctions.not(te.value);
+								ckt.nodes.put(t, te);
+								
+								backtrack.flipPI.push(true);
+								backtrack.assignPI.push(t);
+								ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
+								/*for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
+								{
+									System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
+								}
+								*/
+								term = false;
+								break;
+							}
+						}
+						if(term) 
+							{
+								System.out.println("No vector");
+								countFail++;
+							}
+						
+						if(succeeded(ckt, fault))
+						{
+							success = true;
+							System.out.println("Success");
+							countSucc++;
+							for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
+							{
+								System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
+							}
+							System.out.println("-------------");
+						}
 					}
-				
-				for (String tp: ckt.PO) {
-					if (ckt.nodes.get(tp).value == logic.d || ckt.nodes.get(tp).value == logic.d_bar) {
-						success = true;
+					
+					/*else if(btfail && XpathCheck.xPathCheck(ckt.nodes.get(fault)) && !success)
+					{
+						System.out.println("No vector");
 						break;
-					}
+					}*/
+					
 				}
-			}
 			
+			temp = ckt.nodes.get(fault);
+			sa=logic.one;		//fault stuck at 'sa'
+			temp.fault = "SA1";
+			ckt.nodes.put(fault, temp);
+			success = false;
+			
+			}
+	
 		}
-
+		
+		System.out.println("Total Faults : " + totalFaults);
+		System.out.println("Vectors generated : " + countSucc);
+		System.out.println("Unable to find vectors : " + countFail);
+		
 	}
+	
 }
 

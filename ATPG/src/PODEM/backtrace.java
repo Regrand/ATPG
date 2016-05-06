@@ -160,6 +160,8 @@ public class backtrace {
 
         if(ckt.nodes.get(obj).gate=="nand" || ckt.nodes.get(obj).gate=="nor"|| ckt.nodes.get(obj).gate=="not")
             obj_val=LogicFunctions.not(val);
+        else if(ckt.nodes.get(obj).gate=="xnor" || ckt.nodes.get(obj).gate=="xor")
+        	obj_val=logic.zero;
         else
             obj_val=val;
         
