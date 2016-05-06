@@ -47,7 +47,7 @@ public class MainATPG {
 		
 		graph ckt=new graph();
 
-		VerilogParser.parser_func("VerilogTest.v");
+		VerilogParser.parser_func("c17_benchmark.v");
 		ckt.nodes = VerilogParser.nodes;
 		ckt.PI = VerilogParser.PI;
 		ckt.PO = VerilogParser.PO;
