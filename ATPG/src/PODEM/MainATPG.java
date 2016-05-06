@@ -35,10 +35,10 @@ public class MainATPG {
 	public static void main(String[] args)  throws IOException {
 		graph ckt=new graph();
 		String fault=new String();				//fault node
-		logic sa=logic.zero;		//fault stuck at 'sa'
+		logic sa=logic.one;		//fault stuck at 'sa'
 		Boolean success=false;
 
-		VerilogParser.parser_func("VerilogTest.v");
+		VerilogParser.parser_func("verilog_book_example.v");
 		ckt.nodes = VerilogParser.nodes;
 		ckt.PI = VerilogParser.PI;
 		ckt.PO = VerilogParser.PO;
@@ -47,10 +47,10 @@ public class MainATPG {
 		System.out.println("Printing Node Details");
 		
 		
-		node temp = ckt.nodes.get("r");
-		temp.fault = "SA0";
-		ckt.nodes.put("r", temp);
-		fault = "r";
+		node temp = ckt.nodes.get("s");
+		temp.fault = "SA1";
+		ckt.nodes.put("s", temp);
+		fault = "s";
 		
 		/*
 		for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
@@ -67,31 +67,41 @@ public class MainATPG {
 			
 			if(!isSensitized(ckt.nodes.get(fault))) {
 			
-				backtrace.backtrace_func(fault,sa,ckt);
-				backtrack.flipPI.push(false);
-				backtrack.assignPI.push((backtrace.PI_set));
-				
-				node te = ckt.nodes.get(backtrace.PI_set);
-				te.value = backtrace.PI_value;
-				ckt.nodes.put(backtrace.PI_set, te);
-				
-				ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
-
+				try {
+					backtrace.backtrace_func(fault,sa,ckt);
+					backtrack.flipPI.push(false);
+					backtrack.assignPI.push((backtrace.PI_set));
+					
+					node te = ckt.nodes.get(backtrace.PI_set);
+					te.value = backtrace.PI_value;
+					ckt.nodes.put(backtrace.PI_set, te);
+					
+					ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
+					for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
+					{
+						System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
+					}
+					System.out.println("-------------");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			
 			
 			
 			if(isSensitized(ckt.nodes.get(fault))) {
-				for (int i = 0; i < ckt.PO.size(); i++) {
-					if (ckt.nodes.get(ckt.PO.get(i)).value == logic.d || ckt.nodes.get(ckt.PO.get(i)).value == logic.d_bar) {
+				for (String tp: ckt.PO) {
+					if (ckt.nodes.get(tp).value == logic.d || ckt.nodes.get(tp).value == logic.d_bar) {
 						success = true;
 						break;
 					}
 				}
 			}
 
-			if(XpathCheck.xPathCheck(ckt.nodes.get(fault)) && isSensitized(ckt.nodes.get(fault)))
+			//Xpath succeeds and fault sensitized
+			if(XpathCheck.xPathCheck(ckt.nodes.get(fault)) && isSensitized(ckt.nodes.get(fault)) && !success)
 			{				
 				//Assign unassigned PIs
 				if(allPIAssigned(ckt)!=null)
@@ -104,12 +114,16 @@ public class MainATPG {
 					backtrack.flipPI.push(false);
 					backtrack.assignPI.push(t);
 					ForwardSim.forwardSim(ckt.nodes.get(t));
-					//backtrack.backtrack_func(ckt);
-					//ForwardSim.forwardSim(ckt.nodes.get(backtrack.assignPI.peek()));					
+					for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
+					{
+						System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
+					}
+					System.out.println("-------------");
+										
 				}
 				
-				for (int i = 0; i < ckt.PO.size(); i++) {
-					if (ckt.nodes.get(ckt.PO.get(i)).value == logic.d || ckt.nodes.get(ckt.PO.get(i)).value == logic.d_bar) {
+				for (String tp: ckt.PO) {
+					if (ckt.nodes.get(tp).value == logic.d || ckt.nodes.get(tp).value == logic.d_bar) {
 						success = true;
 						break;
 					}
@@ -117,7 +131,7 @@ public class MainATPG {
 			}
 			
 			//Xpath fails. Backtrack
-			else if(!XpathCheck.xPathCheck(ckt.nodes.get(fault)) && isSensitized(ckt.nodes.get(fault)))
+			else if(!XpathCheck.xPathCheck(ckt.nodes.get(fault)) && !success)
 			{
 				boolean term = true;
 				while(!backtrack.assignPI.isEmpty())
@@ -134,22 +148,32 @@ public class MainATPG {
 						backtrack.flipPI.push(true);
 						backtrack.assignPI.push(t);
 						ForwardSim.forwardSim(ckt.nodes.get(backtrace.PI_set));
+						for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
+						{
+							System.out.println(temp1.getKey() + ":" + temp1.getValue().value);
+						}
+						System.out.println("-------------");
 						term = false;
 						break;
 					}
 				}
+				//backtrack.backtrack_func(ckt);
+				//ForwardSim.forwardSim(ckt.nodes.get(backtrack.assignPI.peek()));
 				//terminate
 				if(term) 
 					{
 					System.out.println("No vector");
 					break;
 					}
+				
+				for (String tp: ckt.PO) {
+					if (ckt.nodes.get(tp).value == logic.d || ckt.nodes.get(tp).value == logic.d_bar) {
+						success = true;
+						break;
+					}
+				}
 			}
 			
-			for(HashMap.Entry<String, node> temp1 : ckt.nodes.entrySet())
-			{
-				temp1.getValue().print_details();
-			}
 		}
 
 	}

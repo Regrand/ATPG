@@ -158,7 +158,7 @@ public class backtrace {
         else
             temp=find_max(g,ckt);
 
-        if(ckt.nodes.get(obj).gate=="nand" || ckt.nodes.get(obj).gate=="nor"|| ckt.nodes.get(obj).gate=="not")
+        if(ckt.nodes.get(obj).gate=="nand" || ckt.nodes.get(obj).gate=="nor"|| ckt.nodes.get(obj).gate=="not" || ckt.nodes.get(obj).gate=="xnor")
             obj_val=LogicFunctions.not(val);
         else
             obj_val=val;
