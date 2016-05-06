@@ -273,7 +273,7 @@ public class LogicFunctions {
 			return val5;
 			
 		case("xnor"):
-			logic val6 = logic.one;
+			logic val6 = logic.zero;
 			for(node input : compNode.inputNodes){
 				val6 = xor(val6, input.value);
 			}
